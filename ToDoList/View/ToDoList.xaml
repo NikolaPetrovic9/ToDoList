@@ -7,7 +7,7 @@
         xmlns:materialIcons="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
         xmlns:vm="clr-namespace:ToDoList.ViewModel"
         mc:Ignorable="d"
-        Title="ToDoList" Height="600" Width="550">
+        Title="ToDoList" Height="650" Width="600">
     <Window.Resources>
         <vm:ToDoVM x:Key="ToDovm"/>
     </Window.Resources>
@@ -23,32 +23,27 @@
                    FontSize="20"
                    Margin="0,10,0,5"
                    HorizontalAlignment="Center"/>
-            <StackPanel>
-                <Grid Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.6*"/>
-                        <ColumnDefinition Width="9.4*"/>
-                    </Grid.ColumnDefinitions>
-                    <materialIcons:MaterialIcon Grid.Column="0"
-                                                Kind="Input" 
-                                                Height="30"
-                                                BorderThickness="0"/>
-                    <TextBox Grid.Column="1"
-                             Text="New Todo"
-                             Margin="0,0,0,0"
-                             Height="30"
-                             FontSize="15"/>
-                </Grid>
-                <Button Content="Add new task"
-                    Height="30"
-                    FontSize="15"
-                    Margin="10,0,10,10"/>
-            </StackPanel>
+            <Border Style="{StaticResource InputBorder}">
+                <StackPanel>
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.6*"/>
+                            <ColumnDefinition Width="9.4*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialIcons:MaterialIcon Grid.Column="0"
+                                                    Kind="Input"
+                                                    Style="{StaticResource InputIcon}"/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding NewToDoItem, Mode=TwoWay}"
+                                 Style="{StaticResource InputTextBox}"/>
+                    </Grid>
+                    <Button Content="Add new task"
+                            Command="{Binding AddItemCommand}"
+                            Style="{StaticResource ConfirmButton}"
+                            Margin="10,0,10,10"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
-
-
-
-
 
         <StackPanel Grid.Row="1">
             <TextBlock
@@ -64,21 +59,17 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-
                     <Button Content="All"
-                        FontSize="15"
-                        Height="30"
+                        Style="{StaticResource ConfirmButton}"
                         Grid.Column="0"
                         Margin="0,0,20,0"/>
                     <Button Content="Done"
                         Grid.Column="1" 
-                        FontSize="15"
-                        Height="30"
+                        Style="{StaticResource ConfirmButton}"
                         Margin="10,0,10,0"/>
                     <Button Content="Todo"
                         Grid.Column="2"
-                        FontSize="15"
-                        Height="30"
+                        Style="{StaticResource ConfirmButton}"
                         Margin="20,0,0,0"/>
                 </Grid>
             </Grid>
@@ -86,15 +77,11 @@
 
 
         <Grid Grid.Row="2" 
-              Margin="20">
-            <ListView ItemsSource="{Binding ToDoItems}" HorizontalContentAlignment="Stretch" >
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Margin" Value="0,5,0,5"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="BorderBrush" Value="LightGray"/>
-                    </Style>
-                </ListView.ItemContainerStyle>
+              Margin="20,10,20,10">
+            <ListView ItemsSource="{Binding ToDoItems}"
+                      HorizontalContentAlignment="Stretch" 
+                      BorderThickness="0"
+                      ItemContainerStyle="{StaticResource ToDoItem}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -105,10 +92,11 @@
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment ="Left"
-                                    Text="{Binding description}"/>
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding description, Mode=TwoWay}"
+                                     IsReadOnly="True"
+                                     VerticalContentAlignment="Center"
+                                     BorderThickness="0"/>
 
                             <CheckBox Grid.Column="1"
                                     VerticalAlignment="Center"
@@ -117,15 +105,13 @@
 
                             <Button Grid.Column="2"
                                     Content="{materialIcons:PackIcon Kind=Edit}"
-                                    Background="Transparent"
-                                    BorderThickness="0"
+                                    Style="{StaticResource EditButton}"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment ="Center"
                                     Margin="2"/>
 
                             <Button Grid.Column="3"
-                                    Background="Transparent"
-                                    BorderThickness="0"
+                                    Style="{StaticResource DeleteButton}"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment ="Center"
                                     Content="{materialIcons:PackIcon Kind=Delete}"
@@ -144,11 +130,13 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" 
                 Content="Delete Done Tasks"
-                Height="30"
+                Command="{Binding DelleteAllDoneItemsCommand}"
+                Style="{StaticResource CancelButton}"
                 Margin="20,0,20,0"/>
             <Button Grid.Column="1" 
-                Content="Delete Done Tasks"
-                Height="30"
+                Content="Delete all Tasks"
+                Command="{Binding DelleteAllItemsCommand}"
+                Style="{StaticResource CancelButton}"
                 Margin="20,0,20,0"/>
         </Grid>
     </Grid>
