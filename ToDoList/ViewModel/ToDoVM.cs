@@ -6,8 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using ToDoList.Model;
+using ToDoList.View;
+using ToDoList.ViewModel.Command;
 
 namespace ToDoList.ViewModel
 {
@@ -15,15 +18,14 @@ namespace ToDoList.ViewModel
     {
         public ObservableCollection<ToDoItem>? ToDoItems { get; set; }
         private string newtoDoItem;
-
         public ICommand AddItemCommand { get; }
         public ICommand DelleteAllItemsCommand { get; }
         public ICommand DelleteAllDoneItemsCommand { get; }
         public ICommand DelleteItemCommand { get; }
+        public ICommand EnableEditingCommand { get; }
         public ICommand ShowDoneItemsCommand { get; }
         public ICommand ShowNotDoneItemsCommand { get; }
         public ICommand ShowAllItemsCommand { get; }
-
         public string NewToDoItem
         {
             get
@@ -40,9 +42,9 @@ namespace ToDoList.ViewModel
             ToDoItems = new ObservableCollection<ToDoItem>();
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
             {
-                ToDoItems.Add(new ToDoItem { description = "Test4", isDone = false, id = 1 });
-                ToDoItems.Add(new ToDoItem { description = "Test2", isDone = false, id = 1 });
-                ToDoItems.Add(new ToDoItem { description = "Test3", isDone = false, id = 1 });
+                ToDoItems.Add(new ToDoItem { description = "Test4", isDone = false, id = 1});
+                ToDoItems.Add(new ToDoItem { description = "Test2", isDone = false, id = 1});
+                ToDoItems.Add(new ToDoItem { description = "Test3", isDone = false, id = 1});
             }
             AddItemCommand = new RelayCommand(addNewItemToList);
             DelleteAllItemsCommand = new RelayCommand(deleteAllItems);
@@ -51,6 +53,7 @@ namespace ToDoList.ViewModel
             ShowNotDoneItemsCommand = new RelayCommand(filterOnlyNotDoneItems);
             ShowAllItemsCommand = new RelayCommand(showAllItems);
             DelleteItemCommand = new RelayCommand(deleteItem);
+            EnableEditingCommand = new RelayCommand(enableEditItem);
         }
 
         public void addNewItemToList(object param)
@@ -86,6 +89,21 @@ namespace ToDoList.ViewModel
             if (ToDoItems != null)
             {
                 ToDoItems.Remove((ToDoItem)param);
+            }
+        }
+        public void enableEditItem(object param)
+        { 
+            if (ToDoItems != null)
+            {
+                //var found = ToDoItems.FirstOrDefault(item => item == (ToDoItem)param);
+                //found.IsReadOnly = !found.IsReadOnly;
+                var newObject = (ToDoItem)param;
+                newObject.isReadOnly = !newObject.isReadOnly;
+
+                var found = ToDoItems.FirstOrDefault(item => item == (ToDoItem)param);
+                int i = ToDoItems.IndexOf(found);
+                ToDoItems.RemoveAt(i);
+                ToDoItems.Insert(i, newObject);
             }
         }
         //Filtering elements

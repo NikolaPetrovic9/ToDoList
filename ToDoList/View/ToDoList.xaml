@@ -97,8 +97,8 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
-                                         Text="{Binding description, Mode=TwoWay}"
-                                         IsReadOnly="True"
+                                         Text="{Binding description }"
+                                         IsReadOnly="{Binding isReadOnly}"
                                          VerticalContentAlignment="Center"
                                          BorderThickness="0"/>
 
@@ -108,6 +108,8 @@
                                         IsChecked="{Binding isDone}"/>
 
                             <Button Grid.Column="2"
+                                        Command="{Binding DataContext.EnableEditingCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                        CommandParameter="{Binding}"
                                         Content="{materialIcons:PackIcon Kind=Edit}"
                                         Style="{StaticResource EditButton}"
                                         VerticalAlignment="Center"
