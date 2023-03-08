@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using ToDoList.Model;
 
@@ -18,6 +19,10 @@ namespace ToDoList.ViewModel
         public ICommand AddItemCommand { get; }
         public ICommand DelleteAllItemsCommand { get; }
         public ICommand DelleteAllDoneItemsCommand { get; }
+        public ICommand DelleteItemCommand { get; }
+        public ICommand ShowDoneItemsCommand { get; }
+        public ICommand ShowNotDoneItemsCommand { get; }
+        public ICommand ShowAllItemsCommand { get; }
 
         public string NewToDoItem
         {
@@ -42,9 +47,13 @@ namespace ToDoList.ViewModel
             AddItemCommand = new RelayCommand(addNewItemToList);
             DelleteAllItemsCommand = new RelayCommand(deleteAllItems);
             DelleteAllDoneItemsCommand = new RelayCommand(deleteAllDoneItems);
+            ShowDoneItemsCommand = new RelayCommand(filterOnlyDoneItems);
+            ShowNotDoneItemsCommand = new RelayCommand(filterOnlyNotDoneItems);
+            ShowAllItemsCommand = new RelayCommand(showAllItems);
+            DelleteItemCommand = new RelayCommand(deleteItem);
         }
 
-        public void addNewItemToList()
+        public void addNewItemToList(object param)
         {
             if(ToDoItems != null && !String.IsNullOrWhiteSpace(newtoDoItem))
             {
@@ -52,14 +61,14 @@ namespace ToDoList.ViewModel
                 NewToDoItem = String.Empty;
             }
         }
-        public void deleteAllItems()
+        public void deleteAllItems(object param)
         {
             if (ToDoItems != null)
             {
                 ToDoItems.Clear();
             }
         }
-        public void deleteAllDoneItems()
+        public void deleteAllDoneItems(object param)
         {
             if (ToDoItems != null)
             {
@@ -72,6 +81,27 @@ namespace ToDoList.ViewModel
                 }
             }
         }
+        public void deleteItem(object param)
+        {
+            if (ToDoItems != null)
+            {
+                ToDoItems.Remove((ToDoItem)param);
+            }
+        }
+        //Filtering elements
+        public void filterOnlyDoneItems(object param)
+        {
+            CollectionViewSource.GetDefaultView(ToDoItems).Filter = item => ((ToDoItem)item).isDone;
+        }
+        public void filterOnlyNotDoneItems(object param)
+        {
+            CollectionViewSource.GetDefaultView(ToDoItems).Filter = item => !((ToDoItem)item).isDone;
+        }
+        public void showAllItems(object param)
+        {
+            CollectionViewSource.GetDefaultView(ToDoItems).Filter = null;
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)

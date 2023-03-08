@@ -60,17 +60,20 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Content="All"
-                        Style="{StaticResource ConfirmButton}"
-                        Grid.Column="0"
-                        Margin="0,0,20,0"/>
+                            Grid.Column="0"
+                            Command="{Binding ShowAllItemsCommand}"
+                            Style="{StaticResource ConfirmButton}"
+                            Margin="0,0,20,0"/>
                     <Button Content="Done"
-                        Grid.Column="1" 
-                        Style="{StaticResource ConfirmButton}"
-                        Margin="10,0,10,0"/>
+                            Grid.Column="1" 
+                            Command="{Binding ShowDoneItemsCommand}"
+                            Style="{StaticResource ConfirmButton}"
+                            Margin="10,0,10,0"/>
                     <Button Content="Todo"
-                        Grid.Column="2"
-                        Style="{StaticResource ConfirmButton}"
-                        Margin="20,0,0,0"/>
+                            Grid.Column="2"
+                            Command="{Binding ShowNotDoneItemsCommand}"
+                            Style="{StaticResource ConfirmButton}"
+                            Margin="20,0,0,0"/>
                 </Grid>
             </Grid>
         </StackPanel>
@@ -79,9 +82,10 @@
         <Grid Grid.Row="2" 
               Margin="20,10,20,10">
             <ListView ItemsSource="{Binding ToDoItems}"
-                      HorizontalContentAlignment="Stretch" 
+                      HorizontalContentAlignment="Stretch"
                       BorderThickness="0"
                       ItemContainerStyle="{StaticResource ToDoItem}">
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -93,29 +97,31 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
-                                     Text="{Binding description, Mode=TwoWay}"
-                                     IsReadOnly="True"
-                                     VerticalContentAlignment="Center"
-                                     BorderThickness="0"/>
+                                         Text="{Binding description, Mode=TwoWay}"
+                                         IsReadOnly="True"
+                                         VerticalContentAlignment="Center"
+                                         BorderThickness="0"/>
 
                             <CheckBox Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment ="Center"
-                                    IsChecked="{Binding isDone}"/>
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment ="Center"
+                                        IsChecked="{Binding isDone}"/>
 
                             <Button Grid.Column="2"
-                                    Content="{materialIcons:PackIcon Kind=Edit}"
-                                    Style="{StaticResource EditButton}"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment ="Center"
-                                    Margin="2"/>
+                                        Content="{materialIcons:PackIcon Kind=Edit}"
+                                        Style="{StaticResource EditButton}"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment ="Center"
+                                        Margin="2"/>
 
                             <Button Grid.Column="3"
-                                    Style="{StaticResource DeleteButton}"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment ="Center"
-                                    Content="{materialIcons:PackIcon Kind=Delete}"
-                                    Margin="2"/>
+                                        Command="{Binding DataContext.DelleteItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource DeleteButton}"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment ="Center"
+                                        Content="{materialIcons:PackIcon Kind=Delete}"
+                                        Margin="2"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

@@ -11,13 +11,15 @@ namespace ToDoList.ViewModel
 {
     public class RelayCommand : ICommand
     {
-        private readonly Action _execute;
+        private readonly Action<object> _execute;
         public event EventHandler? CanExecuteChanged;
         
-        public RelayCommand(Action execute)
+        public RelayCommand(Action<object> execute)
         {
+            if (execute == null) throw new ArgumentNullException(nameof(execute));
             _execute = execute;
         }
+
 
         public bool CanExecute(object? parameter)
         {
@@ -26,7 +28,7 @@ namespace ToDoList.ViewModel
 
         public void Execute(object? parameter)
         {
-            _execute();
+            _execute(parameter);
         }
     }
 }
