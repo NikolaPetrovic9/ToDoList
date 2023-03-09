@@ -72,5 +72,14 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="LightGray"/>
         </Style>
+
+        <Style TargetType="TextBox" x:Key="ToDoItemTextStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=checkItem}" Value="true">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="TextDecorations" Value="Strikethrough"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>

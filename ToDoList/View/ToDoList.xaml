@@ -97,15 +97,19 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
+                                         Style="{DynamicResource ToDoItemTextStyle}"
                                          Text="{Binding description }"
                                          IsReadOnly="{Binding isReadOnly}"
                                          VerticalContentAlignment="Center"
                                          BorderThickness="0"/>
 
                             <CheckBox Grid.Column="1"
+                                        x:Name="checkItem"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment ="Center"
-                                        IsChecked="{Binding isDone}"/>
+                                        IsChecked="{Binding isDone}"
+                                        Command="{Binding DataContext.IsDoneCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                        CommandParameter="{Binding}"/>
 
                             <Button Grid.Column="2"
                                         Command="{Binding DataContext.EnableEditingCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"

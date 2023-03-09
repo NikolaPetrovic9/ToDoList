@@ -11,6 +11,7 @@ using System.Windows.Input;
 using ToDoList.Model;
 using ToDoList.View;
 using ToDoList.ViewModel.Command;
+using ToDoList.ViewModel.Helpers;
 
 namespace ToDoList.ViewModel
 {
@@ -26,6 +27,7 @@ namespace ToDoList.ViewModel
         public ICommand ShowDoneItemsCommand { get; }
         public ICommand ShowNotDoneItemsCommand { get; }
         public ICommand ShowAllItemsCommand { get; }
+        public ICommand IsDoneCommand { get; }
         public string NewToDoItem
         {
             get
@@ -42,9 +44,9 @@ namespace ToDoList.ViewModel
             ToDoItems = new ObservableCollection<ToDoItem>();
             if (DesignerProperties.GetIsInDesignMode(new System.Windows.DependencyObject()))
             {
-                ToDoItems.Add(new ToDoItem { description = "Test4", isDone = false, id = 1});
-                ToDoItems.Add(new ToDoItem { description = "Test2", isDone = false, id = 1});
-                ToDoItems.Add(new ToDoItem { description = "Test3", isDone = false, id = 1});
+                ToDoItems.Add(new ToDoItem { description = "Test4", isDone = false, id = 1 });
+                ToDoItems.Add(new ToDoItem { description = "Test2", isDone = false, id = 1 });
+                ToDoItems.Add(new ToDoItem { description = "Test3", isDone = false, id = 1 });
             }
             AddItemCommand = new RelayCommand(addNewItemToList);
             DelleteAllItemsCommand = new RelayCommand(deleteAllItems);
@@ -54,14 +56,36 @@ namespace ToDoList.ViewModel
             ShowAllItemsCommand = new RelayCommand(showAllItems);
             DelleteItemCommand = new RelayCommand(deleteItem);
             EnableEditingCommand = new RelayCommand(enableEditItem);
+            IsDoneCommand = new RelayCommand(isDoneChanged);
+            foreach (var item in ToDoDatabase.ReadTable())
+            {
+                ToDoItems.Add(item);
+            }
         }
 
         public void addNewItemToList(object param)
         {
-            if(ToDoItems != null && !String.IsNullOrWhiteSpace(newtoDoItem))
+            if (ToDoItems != null && !String.IsNullOrWhiteSpace(newtoDoItem))
             {
-                ToDoItems.Add(new ToDoItem { description = newtoDoItem, isDone = false, id = 1 });
+                ToDoItems.Clear();
+                ToDoDatabase.AddNewItem(new ToDoItem { description = newtoDoItem, isDone = false });
+                foreach (var item in ToDoDatabase.ReadTable())
+                {
+                    ToDoItems.Add(item);
+                }
                 NewToDoItem = String.Empty;
+            }
+        }
+        public void isDoneChanged(object param)
+        {
+            if (ToDoItems != null)
+            {
+                ToDoItems.Clear();
+                ToDoDatabase.UpdateItem((ToDoItem)param);
+                foreach (var item in ToDoDatabase.ReadTable())
+                {
+                    ToDoItems.Add(item);
+                }
             }
         }
         public void deleteAllItems(object param)
@@ -69,18 +93,22 @@ namespace ToDoList.ViewModel
             if (ToDoItems != null)
             {
                 ToDoItems.Clear();
+                ToDoDatabase.DeleteAllItems();
+                foreach (var item in ToDoDatabase.ReadTable())
+                {
+                    ToDoItems.Add(item);
+                }
             }
         }
         public void deleteAllDoneItems(object param)
         {
             if (ToDoItems != null)
             {
-                foreach (var item in ToDoItems.ToList())
+                ToDoItems.Clear();
+                ToDoDatabase.DeleteAllDoneItems();
+                foreach (var item in ToDoDatabase.ReadTable())
                 {
-                    if (item.isDone)
-                    {
-                        ToDoItems.Remove(item);
-                    }
+                    ToDoItems.Add(item);
                 }
             }
         }
@@ -88,22 +116,26 @@ namespace ToDoList.ViewModel
         {
             if (ToDoItems != null)
             {
-                ToDoItems.Remove((ToDoItem)param);
+                ToDoItems.Clear();
+                ToDoDatabase.DeleteItem((ToDoItem)param);
+                foreach (var item in ToDoDatabase.ReadTable())
+                {
+                    ToDoItems.Add(item);
+                }
             }
         }
         public void enableEditItem(object param)
-        { 
+        {
             if (ToDoItems != null)
             {
-                //var found = ToDoItems.FirstOrDefault(item => item == (ToDoItem)param);
-                //found.IsReadOnly = !found.IsReadOnly;
-                var newObject = (ToDoItem)param;
-                newObject.isReadOnly = !newObject.isReadOnly;
-
-                var found = ToDoItems.FirstOrDefault(item => item == (ToDoItem)param);
-                int i = ToDoItems.IndexOf(found);
-                ToDoItems.RemoveAt(i);
-                ToDoItems.Insert(i, newObject);
+                ToDoItems.Clear();
+                ((ToDoItem)param).isReadOnly = !((ToDoItem)param).isReadOnly;
+                ToDoDatabase.UpdateItem((ToDoItem)param);
+               
+                foreach (var item in ToDoDatabase.ReadTable())
+                {
+                    ToDoItems.Add(item);
+                }
             }
         }
         //Filtering elements
