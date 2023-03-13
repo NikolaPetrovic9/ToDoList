@@ -1,5 +1,5 @@
 # ToDoList
-WPF project - Simple ToDoList with SQLite database integrated
+**WPF project** - Simple ToDoList with **SQLite** database integrated
 
 # Built With
 Visual Studio 2022
